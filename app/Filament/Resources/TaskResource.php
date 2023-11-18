@@ -8,6 +8,8 @@ use App\Filament\Resources\TaskResource\RelationManagers;
 use App\Models\Tag;
 use App\Models\Task;
 use App\Models\User;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -15,6 +17,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 
 class TaskResource extends Resource
@@ -57,7 +60,9 @@ class TaskResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('description'),
                 TextColumn::make('status')
+                    ->searchable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         TaskEnum::OPEN=> 'warning',
@@ -70,10 +75,10 @@ class TaskResource extends Resource
                     }),
             ])
             ->filters([
-                //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->hidden(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
