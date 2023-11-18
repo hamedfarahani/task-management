@@ -14,7 +14,7 @@ class CreateTask extends CreateRecord
 
     protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
-        $data['status'] = TaskEnum::STATUS[$data['status']];
+        $data['status'] = TaskEnum::OPEN;
         $userId = auth()->user()->id;
         $data['user_id'] = $userId;
         $data['creator_id'] = $userId;

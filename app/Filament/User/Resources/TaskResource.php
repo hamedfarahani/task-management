@@ -23,6 +23,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rules\In;
 
 class TaskResource extends Resource
 {
@@ -32,6 +33,7 @@ class TaskResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $isUpdate = $form->getOperation() === "edit";
         return $form
             ->schema([
                 Forms\Components\Group::make()
@@ -42,15 +44,21 @@ class TaskResource extends Resource
                                 TextInput::make('description')->required(),
                                 Forms\Components\Select::make('status')
                                     ->label('Status')
-                                    ->options(TaskEnum::STATUS)
-                                    ->required(),
+                                    ->options([
+                                        TaskEnum::OPEN => TaskEnum::OPEN,
+                                        TaskEnum::PENDING => TaskEnum::PENDING,
+                                        TaskEnum::PROGRESS => TaskEnum::PROGRESS,
+                                        TaskEnum::REVIEW => TaskEnum::REVIEW,
+                                    ])
+                                    ->required()
+                                    ->visible($isUpdate)
                             ])->columns(2),
                         Select::make('tag_id')
                             ->label('Tags')
                             ->options(Tag::latest()->take(10)->pluck('name','id'))
                             ->multiple()
                             ->searchable()
-                            ->hidden(fn (string $context): bool => $context === 'create'),
+                            ->visible(fn (string $context): bool => $context === 'create'),
                     ]),
             ]);
     }
