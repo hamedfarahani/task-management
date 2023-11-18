@@ -19,7 +19,10 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TaskResource extends Resource
 {
@@ -74,7 +77,24 @@ class TaskResource extends Resource
                     }),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        TaskEnum::OPEN => TaskEnum::OPEN,
+                        TaskEnum::PENDING => TaskEnum::PENDING,
+                        TaskEnum::PROGRESS => TaskEnum::PROGRESS,
+                        TaskEnum::REVIEW => TaskEnum::REVIEW,
+                        TaskEnum::ACCEPTED => TaskEnum::ACCEPTED,
+                        TaskEnum::REJECTED => TaskEnum::REJECTED,
+                    ]),
+                Filter::make('tag')->form([
+                    TextInput::make('tag')->label('Tag Name')
+                ])->query(function (Builder $query, array $data): Builder{
+                    $tag = $data['tag'];
+                    $result =  $query->whereHas('tags', function (Builder $query) use ($tag){
+                        $query->where('name', 'like', "%$tag%");
+                    });
+                    return $result;
+                }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->visible(function (Task $task) { return auth()->user()->id === $task->creator_id;}),

@@ -75,6 +75,33 @@ class TaskResource extends Resource
                     }),
             ])
             ->filters([
+                SelectFilter::make('status')
+                    ->options([
+                        TaskEnum::OPEN => TaskEnum::OPEN,
+                        TaskEnum::PENDING => TaskEnum::PENDING,
+                        TaskEnum::PROGRESS => TaskEnum::PROGRESS,
+                        TaskEnum::REVIEW => TaskEnum::REVIEW,
+                        TaskEnum::ACCEPTED => TaskEnum::ACCEPTED,
+                        TaskEnum::REJECTED => TaskEnum::REJECTED,
+                    ]),
+                Filter::make('tag')->form([
+                    TextInput::make('tag')->label('Tag Name')
+                ])->query(function (Builder $query, array $data): Builder{
+                    $tag = $data['tag'];
+                    $result =  $query->whereHas('tags', function (Builder $query) use ($tag){
+                        $query->where('name', 'like', "%$tag%");
+                    });
+                    return $result;
+                }),
+                Filter::make('user')->form([
+                    TextInput::make('email')->label('User Email')
+                ])->query(function (Builder $query, array $data): Builder{
+                    $email = $data['email'];
+                    $result =  $query->whereHas('user', function (Builder $query) use ($email){
+                        $query->where('email', 'like', "%$email%");
+                    });
+                    return $result;
+                }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->hidden(),
