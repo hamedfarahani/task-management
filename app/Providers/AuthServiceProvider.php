@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Enum\RoleEnum;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,13 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (request()->is(config('app.admin_path').'/*')) {
+            /**
+             * Super Admin Have Access To All Of Permissions
+             */
+            Gate::before(function ($user, $ability) {
+                return $user->hasRole(RoleEnum::SUPER_ADMIN) ? true : null;
+            });
+        }
     }
 }

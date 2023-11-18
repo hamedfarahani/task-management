@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\TaskResource\Pages;
+namespace App\Filament\User\Resources\TagResource\Pages;
 
 use App\Enum\TaskEnum;
-use App\Filament\Resources\TaskResource;
+use App\Filament\User\Resources\TaskResource;
 use App\Models\TaskTag;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -15,7 +15,9 @@ class CreateTask extends CreateRecord
     protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
         $data['status'] = TaskEnum::STATUS[$data['status']];
-        $data['creator_id'] = auth()->user()->id;
+        $userId = auth()->user()->id;
+        $data['user_id'] = $userId;
+        $data['creator_id'] = $userId;
         $tagsId = $data['tag_id'];
         unset($data['tag_id']);
         $task = static::getModel()::create($data);

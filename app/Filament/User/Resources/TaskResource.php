@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\User\Resources;
 
 use App\Enum\TaskEnum;
-use App\Filament\Resources\TaskResource\Pages;
-use App\Filament\Resources\TaskResource\RelationManagers;
+use App\Filament\User\Resources\Resources;
+use App\Filament\User\Resources\Resources\TaskResource\Resources\TaskResource\Pages\EditTask;
+use App\Filament\User\Resources\TagResource\Pages\CreateTask;
+use App\Filament\User\Resources\TaskResource\Pages\ListTasks;
 use App\Models\Tag;
 use App\Models\Task;
-use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -36,10 +37,6 @@ class TaskResource extends Resource
                                 Forms\Components\Select::make('status')
                                     ->label('Status')
                                     ->options(TaskEnum::STATUS)
-                                    ->required(),
-                                Forms\Components\Select::make('user_id')
-                                    ->label('User')
-                                    ->options(User::take(10)->pluck('name', 'id')->toArray())
                                     ->required(),
                             ])->columns(2),
                         Select::make('tag_id')
@@ -92,9 +89,9 @@ class TaskResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTasks::route('/'),
-            'create' => Pages\CreateTask::route('/create'),
-            'edit' => Pages\EditTask::route('/{record}/edit'),
+            'index' => ListTasks::route('/'),
+            'create' => CreateTask::route('/create'),
+            'edit' => EditTask::route('/{record}/edit'),
         ];
     }
 }
