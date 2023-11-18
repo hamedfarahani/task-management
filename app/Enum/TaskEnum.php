@@ -12,6 +12,7 @@ Class TaskEnum
     const REJECTED = 'REJECTED';
 
     const STATUS = [
+        self::OPEN,
         self::PENDING,
         self::PROGRESS,
         self::REVIEW,
