@@ -18,6 +18,11 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'creator_id');
+    }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class,'task_tags')->using(TaskTag::class);

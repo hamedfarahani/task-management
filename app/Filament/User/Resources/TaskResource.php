@@ -49,7 +49,8 @@ class TaskResource extends Resource
                             ->label('Tags')
                             ->options(Tag::latest()->take(10)->pluck('name','id'))
                             ->multiple()
-                            ->searchable(),
+                            ->searchable()
+                            ->hidden(fn (string $context): bool => $context === 'create'),
                     ]),
             ]);
     }

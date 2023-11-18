@@ -38,7 +38,14 @@ class TaskResource extends Resource
                                 TextInput::make('description')->required(),
                                 Forms\Components\Select::make('status')
                                     ->label('Status')
-                                    ->options(TaskEnum::STATUS)
+                                    ->options([
+                                        TaskEnum::OPEN => TaskEnum::OPEN,
+                                        TaskEnum::PENDING => TaskEnum::PENDING,
+                                        TaskEnum::PROGRESS => TaskEnum::PROGRESS,
+                                        TaskEnum::REVIEW => TaskEnum::REVIEW,
+                                        TaskEnum::ACCEPTED => TaskEnum::ACCEPTED,
+                                        TaskEnum::REJECTED => TaskEnum::REJECTED,
+                                    ])
                                     ->required(),
                                 Forms\Components\Select::make('user_id')
                                     ->label('User')
@@ -49,7 +56,8 @@ class TaskResource extends Resource
                             ->label('Tags')
                             ->options(Tag::latest()->take(10)->pluck('name','id'))
                             ->multiple()
-                            ->searchable(),
+                            ->searchable()
+                            ->visible(fn (string $context): bool => $context === 'create'),
                     ]),
             ]);
     }
@@ -104,7 +112,7 @@ class TaskResource extends Resource
                 }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->hidden(),
+                Tables\Actions\EditAction::make(),
 
             ])
             ->bulkActions([

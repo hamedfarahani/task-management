@@ -5,6 +5,7 @@ namespace App\Filament\User\Resources\Resources\TaskResource\Resources\TaskResou
 use App\Filament\Resources\TaskResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class EditTask extends EditRecord
 {
