@@ -28,6 +28,7 @@ class TaskResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $isUpdate = $form->getOperation() === "edit";
         return $form
             ->schema([
                 Forms\Components\Group::make()
@@ -46,7 +47,8 @@ class TaskResource extends Resource
                                         TaskEnum::ACCEPTED => TaskEnum::ACCEPTED,
                                         TaskEnum::REJECTED => TaskEnum::REJECTED,
                                     ])
-                                    ->required(),
+                                    ->required()
+                                    ->visible($isUpdate),
                                 Forms\Components\Select::make('user_id')
                                     ->label('User')
                                     ->options(User::take(10)->pluck('name', 'id')->toArray())
@@ -96,10 +98,14 @@ class TaskResource extends Resource
                     TextInput::make('tag')->label('Tag Name')
                 ])->query(function (Builder $query, array $data): Builder{
                     $tag = $data['tag'];
-                    $result =  $query->whereHas('tags', function (Builder $query) use ($tag){
-                        $query->where('name', 'like', "%$tag%");
-                    });
-                    return $result;
+                    if($tag != null){
+                        $result =  $query->whereHas('tags', function (Builder $query) use ($tag){
+                            $query->where('name', 'like', "%$tag%");
+                        });
+                        return $result;
+                    }else{
+                        return $query;
+                    }
                 }),
                 Filter::make('user')->form([
                     TextInput::make('email')->label('User Email')
@@ -113,6 +119,7 @@ class TaskResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
 
             ])
             ->bulkActions([

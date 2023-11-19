@@ -21,6 +21,6 @@ class UserTableSeeder extends Seeder
         ];
         $user = User::create($user);
 
-//        $user->assignRole(RoleEnum::SUPER_ADMIN);
+        $user->assignRole(RoleEnum::SUPER_ADMIN);
     }
 }

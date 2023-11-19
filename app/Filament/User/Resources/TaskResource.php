@@ -99,10 +99,14 @@ class TaskResource extends Resource
                     TextInput::make('tag')->label('Tag Name')
                 ])->query(function (Builder $query, array $data): Builder{
                     $tag = $data['tag'];
-                    $result =  $query->whereHas('tags', function (Builder $query) use ($tag){
-                        $query->where('name', 'like', "%$tag%");
-                    });
-                    return $result;
+                    if($tag != null){
+                        $result =  $query->whereHas('tags', function (Builder $query) use ($tag){
+                            $query->where('name', 'like', "%$tag%");
+                        });
+                        return $result;
+                    }else{
+                        return $query;
+                    }
                 }),
             ])
             ->actions([
